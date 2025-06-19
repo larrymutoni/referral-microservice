@@ -1,7 +1,18 @@
+const sequelize = require("../config/db"); // 👈 Sequelize instance
+
 const express = require("express");
 const router = express.Router();
 const referralController = require("../controllers/referralController");
 const authenticateJWT = require("../middleware/authenticateJWT");
+
+router.get("/health", async (req, res) => {
+  try {
+    await sequelize.authenticate(); // 🧠 Check DB connection
+    res.status(200).json({ status: "ok", db: "connected" });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
+});
 
 // Protected routes with JWT
 router.post("/generate", authenticateJWT, referralController.generateReferralCode);
