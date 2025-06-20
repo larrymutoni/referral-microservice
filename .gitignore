@@ -1,2 +1,4 @@
 generateToken.js
+dropTables.js
+node_modules/
 .env

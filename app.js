@@ -4,7 +4,6 @@ const referralRoutes = require("./routes/referralRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 
-// Swagger setup
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: "3.0.0",
@@ -15,7 +14,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "https://referral-microservice.onrender.com", // use localhost:5003 for local
+        url: "https://referral-microservice.onrender.com",
       },
     ],
     components: {
@@ -43,7 +42,9 @@ app.use(express.json());
 app.use("/api/referrals", referralRoutes);
 
 app.get("/", (req, res) => {
-  res.send("🎉 Referral Microservice is running! Visit /api-docs for Swagger UI.");
+  res.send(
+    "🎉 Referral Microservice is running! Visit /api-docs for Swagger UI."
+  );
 });
 
 module.exports = app;

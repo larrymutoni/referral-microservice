@@ -2,7 +2,6 @@ const { v4: uuidv4 } = require("uuid");
 const ReferralCode = require("../models/ReferralCode");
 const ReferralUsage = require("../models/ReferralUsage");
 
-// Generate referral code
 exports.generateReferralCode = async (req, res) => {
   const uuid = req.user.uuid;
 
@@ -19,7 +18,6 @@ exports.generateReferralCode = async (req, res) => {
   }
 };
 
-// Reset referral code
 exports.resetReferralCode = async (req, res) => {
   const uuid = req.user.uuid;
 
@@ -30,7 +28,8 @@ exports.resetReferralCode = async (req, res) => {
       { where: { uuid } }
     );
 
-    if (!updated) return res.status(404).json({ message: "No referral code found" });
+    if (!updated)
+      return res.status(404).json({ message: "No referral code found" });
 
     res.status(200).json({ uuid, new_code: newCode });
   } catch (err) {
@@ -38,7 +37,6 @@ exports.resetReferralCode = async (req, res) => {
   }
 };
 
-// Use someone's referral code
 exports.useReferralCode = async (req, res) => {
   const uuid = req.user.uuid;
   const { code } = req.body;
@@ -46,7 +44,9 @@ exports.useReferralCode = async (req, res) => {
   try {
     const existingUsage = await ReferralUsage.findOne({ where: { uuid } });
     if (existingUsage) {
-      return res.status(400).json({ message: "You already used a referral code." });
+      return res
+        .status(400)
+        .json({ message: "You already used a referral code." });
     }
 
     const referrer = await ReferralCode.findOne({ where: { code } });
@@ -70,7 +70,6 @@ exports.useReferralCode = async (req, res) => {
   }
 };
 
-// See your own referral code
 exports.getMyReferralCode = async (req, res) => {
   const uuid = req.user.uuid;
 
@@ -86,7 +85,6 @@ exports.getMyReferralCode = async (req, res) => {
   }
 };
 
-// See who referred you
 exports.getWhoReferredMe = async (req, res) => {
   const uuid = req.user.uuid;
 
@@ -102,12 +100,13 @@ exports.getWhoReferredMe = async (req, res) => {
   }
 };
 
-// See who you referred
 exports.getPeopleIReferred = async (req, res) => {
   const uuid = req.user.uuid;
 
   try {
-    const referrals = await ReferralUsage.findAll({ where: { referred_by: uuid } });
+    const referrals = await ReferralUsage.findAll({
+      where: { referred_by: uuid },
+    });
 
     res.status(200).json({
       count: referrals.length,

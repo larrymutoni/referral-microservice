@@ -1,11 +1,12 @@
-// generateToken.js
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const uuid = process.argv[2]; // Pass uuid from CLI
+const uuid = process.argv[2];
 
 if (!uuid) {
-  console.error("❌ Please provide a UUID.\nUsage: node generateToken.js <uuid>");
+  console.error(
+    "❌ Please provide a UUID.\nUsage: node generateToken.js <uuid>"
+  );
   process.exit(1);
 }
 
