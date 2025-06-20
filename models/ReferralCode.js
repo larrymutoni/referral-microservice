@@ -1,10 +1,9 @@
-// models/ReferralCode.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
 const ReferralCode = sequelize.define("ReferralCode", {
-  user_id: {
-    type: DataTypes.INTEGER,
+  uuid: {
+    type: DataTypes.STRING,
     allowNull: false,
     primaryKey: true,
   },

@@ -8,9 +8,17 @@ const ReferralUsage = require("../models/ReferralUsage");
 
 /**
  * @swagger
+ * tags:
+ *   name: Referrals
+ *   description: Referral code and usage APIs
+ */
+
+/**
+ * @swagger
  * /api/referrals/health:
  *   get:
  *     summary: Health check
+ *     tags: [Referrals]
  *     responses:
  *       200:
  *         description: Service is healthy
@@ -28,12 +36,13 @@ router.get("/health", async (req, res) => {
  * @swagger
  * /api/referrals/generate:
  *   post:
- *     summary: Generate a referral code
+ *     summary: Generate your own referral code
+ *     tags: [Referrals]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       201:
- *         description: Referral code created
+ *         description: Referral code generated
  */
 router.post("/generate", authenticateJWT, referralController.generateReferralCode);
 
@@ -42,11 +51,12 @@ router.post("/generate", authenticateJWT, referralController.generateReferralCod
  * /api/referrals/reset:
  *   post:
  *     summary: Reset your referral code
+ *     tags: [Referrals]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Referral code reset
+ *         description: Referral code reset successfully
  */
 router.post("/reset", authenticateJWT, referralController.resetReferralCode);
 
@@ -54,7 +64,8 @@ router.post("/reset", authenticateJWT, referralController.resetReferralCode);
  * @swagger
  * /api/referrals/use:
  *   post:
- *     summary: Use someone else's referral code
+ *     summary: Use another user's referral code
+ *     tags: [Referrals]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -77,11 +88,12 @@ router.post("/use", authenticateJWT, referralController.useReferralCode);
  * /api/referrals/my:
  *   get:
  *     summary: View your referral code
+ *     tags: [Referrals]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Returns your referral code
+ *         description: Your referral code
  */
 router.get("/my", authenticateJWT, referralController.getMyReferralCode);
 
@@ -90,11 +102,12 @@ router.get("/my", authenticateJWT, referralController.getMyReferralCode);
  * /api/referrals/referred-by:
  *   get:
  *     summary: See who referred you
+ *     tags: [Referrals]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Referrer info
+ *         description: Referrer information
  */
 router.get("/referred-by", authenticateJWT, referralController.getWhoReferredMe);
 
@@ -103,6 +116,7 @@ router.get("/referred-by", authenticateJWT, referralController.getWhoReferredMe)
  * /api/referrals/referrals:
  *   get:
  *     summary: See who you referred
+ *     tags: [Referrals]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -115,10 +129,11 @@ router.get("/referrals", authenticateJWT, referralController.getPeopleIReferred)
  * @swagger
  * /api/referrals/all-codes:
  *   get:
- *     summary: Get all referral codes (admin)
+ *     summary: Get all referral codes (admin/dev only)
+ *     tags: [Referrals]
  *     responses:
  *       200:
- *         description: All referral codes
+ *         description: List of all referral codes
  */
 router.get("/all-codes", async (req, res) => {
   try {
@@ -133,10 +148,11 @@ router.get("/all-codes", async (req, res) => {
  * @swagger
  * /api/referrals/all-usages:
  *   get:
- *     summary: Get all referral usages (admin)
+ *     summary: Get all referral usages (admin/dev only)
+ *     tags: [Referrals]
  *     responses:
  *       200:
- *         description: All referral usages
+ *         description: List of all referral usages
  */
 router.get("/all-usages", async (req, res) => {
   try {
@@ -148,37 +164,3 @@ router.get("/all-usages", async (req, res) => {
 });
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-// const sequelize = require("../config/db"); // 👈 Sequelize instance
-
-// const express = require("express");
-// const router = express.Router();
-// const referralController = require("../controllers/referralController");
-// const authenticateJWT = require("../middleware/authenticateJWT");
-
-// router.get("/health", async (req, res) => {
-//   try {
-//     await sequelize.authenticate(); // 🧠 Check DB connection
-//     res.status(200).json({ status: "ok", db: "connected" });
-//   } catch (err) {
-//     res.status(500).json({ status: "error", message: err.message });
-//   }
-// });
-
-// // Protected routes with JWT
-// router.post("/generate", authenticateJWT, referralController.generateReferralCode);
-// router.post("/reset", authenticateJWT, referralController.resetReferralCode);
-// router.post("/use", authenticateJWT, referralController.useReferralCode);
-// router.get("/my", authenticateJWT, referralController.getMyReferralCode);
-// router.get("/referred-by", authenticateJWT, referralController.getWhoReferredMe);
-// router.get("/referrals", authenticateJWT, referralController.getPeopleIReferred);
-
-// module.exports = router;

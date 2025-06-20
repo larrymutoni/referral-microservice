@@ -2,18 +2,20 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const userId = process.argv[2]; // user_id from command line
+const uuid = process.argv[2]; // Pass uuid from CLI
 
-if (!userId) {
-  console.error("❌ Please provide a user_id.\nUsage: node generateToken.js <user_id>");
+if (!uuid) {
+  console.error("❌ Please provide a UUID.\nUsage: node generateToken.js <uuid>");
   process.exit(1);
 }
 
-const token = jwt.sign(
-  { user_id: parseInt(userId) },
-  process.env.JWT_SECRET,
-  { expiresIn: "1h" } // token valid for 1 hour
-);
+const payload = {
+  uuid,
+  email: "user@example.com",
+  userType: "customer",
+};
 
-console.log("✅ JWT Token:\n");
+const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+console.log("\n✅ JWT Token:\n");
 console.log(token);

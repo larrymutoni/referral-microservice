@@ -1,15 +1,14 @@
-// models/ReferralUsage.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
 const ReferralUsage = sequelize.define("ReferralUsage", {
-  user_id: {
-    type: DataTypes.INTEGER,
+  uuid: {
+    type: DataTypes.STRING,
     allowNull: false,
     primaryKey: true,
   },
   referred_by: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   code_used: {

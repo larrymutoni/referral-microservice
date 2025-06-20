@@ -4,14 +4,14 @@ const ReferralUsage = require("../models/ReferralUsage");
 
 // Generate referral code
 exports.generateReferralCode = async (req, res) => {
-  const userId = req.user.id;
+  const uuid = req.user.uuid;
 
   try {
-    const existing = await ReferralCode.findOne({ where: { user_id: userId } });
+    const existing = await ReferralCode.findOne({ where: { uuid } });
     if (existing) return res.status(200).json(existing);
 
     const code = uuidv4().slice(0, 10);
-    const newCode = await ReferralCode.create({ user_id: userId, code });
+    const newCode = await ReferralCode.create({ uuid, code });
 
     res.status(201).json(newCode);
   } catch (err) {
@@ -21,18 +21,18 @@ exports.generateReferralCode = async (req, res) => {
 
 // Reset referral code
 exports.resetReferralCode = async (req, res) => {
-  const userId = req.user.id;
+  const uuid = req.user.uuid;
 
   try {
     const newCode = uuidv4().slice(0, 10);
     const [updated] = await ReferralCode.update(
       { code: newCode },
-      { where: { user_id: userId } }
+      { where: { uuid } }
     );
 
     if (!updated) return res.status(404).json({ message: "No referral code found" });
 
-    res.status(200).json({ user_id: userId, new_code: newCode });
+    res.status(200).json({ uuid, new_code: newCode });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -40,11 +40,11 @@ exports.resetReferralCode = async (req, res) => {
 
 // Use someone's referral code
 exports.useReferralCode = async (req, res) => {
-  const userId = req.user.id;
+  const uuid = req.user.uuid;
   const { code } = req.body;
 
   try {
-    const existingUsage = await ReferralUsage.findOne({ where: { user_id: userId } });
+    const existingUsage = await ReferralUsage.findOne({ where: { uuid } });
     if (existingUsage) {
       return res.status(400).json({ message: "You already used a referral code." });
     }
@@ -54,17 +54,17 @@ exports.useReferralCode = async (req, res) => {
       return res.status(404).json({ message: "Referral code not found." });
     }
 
-    if (referrer.user_id === userId) {
+    if (referrer.uuid === uuid) {
       return res.status(400).json({ message: "Cannot refer yourself." });
     }
 
     await ReferralUsage.create({
-      user_id: userId,
-      referred_by: referrer.user_id,
+      uuid,
+      referred_by: referrer.uuid,
       code_used: code,
     });
 
-    res.status(201).json({ message: `Referred by user ${referrer.user_id}` });
+    res.status(201).json({ message: `Referred by user ${referrer.uuid}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -72,10 +72,10 @@ exports.useReferralCode = async (req, res) => {
 
 // See your own referral code
 exports.getMyReferralCode = async (req, res) => {
-  const userId = req.user.id;
+  const uuid = req.user.uuid;
 
   try {
-    const code = await ReferralCode.findOne({ where: { user_id: userId } });
+    const code = await ReferralCode.findOne({ where: { uuid } });
     if (!code) {
       return res.status(404).json({ message: "No referral code found" });
     }
@@ -88,10 +88,10 @@ exports.getMyReferralCode = async (req, res) => {
 
 // See who referred you
 exports.getWhoReferredMe = async (req, res) => {
-  const userId = req.user.id;
+  const uuid = req.user.uuid;
 
   try {
-    const usage = await ReferralUsage.findOne({ where: { user_id: userId } });
+    const usage = await ReferralUsage.findOne({ where: { uuid } });
     if (!usage) {
       return res.status(404).json({ message: "Not referred by anyone" });
     }
@@ -104,10 +104,10 @@ exports.getWhoReferredMe = async (req, res) => {
 
 // See who you referred
 exports.getPeopleIReferred = async (req, res) => {
-  const userId = req.user.id;
+  const uuid = req.user.uuid;
 
   try {
-    const referrals = await ReferralUsage.findAll({ where: { referred_by: userId } });
+    const referrals = await ReferralUsage.findAll({ where: { referred_by: uuid } });
 
     res.status(200).json({
       count: referrals.length,
