@@ -1,8 +1,18 @@
 const express = require("express");
 const app = express();
+
+const cors = require("cors");
 const referralRoutes = require("./routes/referralRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+
+app.use(
+  cors({
+    origin: "*", // ← allows requests from anywhere
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -43,7 +53,9 @@ app.use("/api/referrals", referralRoutes);
 
 app.get("/", (req, res) => {
   res.send(
+    
     "🎉 Referral Microservice is running! Visit /api-docs for Swagger UI."
+  
   );
 });
 
